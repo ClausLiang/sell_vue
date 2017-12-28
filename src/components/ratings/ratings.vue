@@ -1,10 +1,10 @@
 <template>
-  <div>header</div>
+  <div>ratings</div>
 </template>
 
 <script>
   export default {
-    name: 'vheader'
+    name: 'ratings'
   }
 </script>
 

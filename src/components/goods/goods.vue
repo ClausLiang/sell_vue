@@ -1,10 +1,10 @@
 <template>
-  <div>header</div>
+  <div class="goods">goods</div>
 </template>
 
 <script>
   export default {
-    name: 'vheader'
+    name: 'goods'
   }
 </script>
 
