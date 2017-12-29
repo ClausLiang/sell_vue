@@ -14,6 +14,20 @@
 import vheader from './components/header/header'
 export default {
   name: 'app',
+  data () {
+    return {
+      seller: {}
+    }
+  },
+  created () {
+    this.$http.get('./data.json').then(response => {
+      this.seller = response.data.seller
+    }, error => {
+      console.log(error)
+    }).catch(err => {
+      console.log(err)
+    })
+  },
   components: {
     'v-header': vheader
   }
