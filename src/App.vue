@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <v-header></v-header>
+    <v-header :seller="seller"></v-header>
     <div class="tab border-1px">
       <router-link tag="div" to="/" class="tab-item" activeClass="on" exact>商品</router-link>
       <router-link tag="div" to="/ratings" class="tab-item" activeClass="on" exact>评论</router-link>
@@ -39,6 +39,8 @@ export default {
 @import "./common/stylus/base.styl"
 html,body{
   margin: 0;
+  font-weight:200;
+  line-height:1
 }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
