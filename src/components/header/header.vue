@@ -14,13 +14,20 @@
         </div>
         <div class="description">{{seller.description}}/{{seller.deliveryTime}}分钟送达</div>
         <div class="support" v-if="seller.supports">
-          <span class="icon"></span>
+          <span class="icon" :class="classMap[seller.supports[0].type]"></span>
           <span class="text">{{seller.supports[0].description}}</span>
         </div>
       </div>
+      <div v-if="seller.supports" class="support-count">
+        <span class="count">{{seller.supports.length}}个</span>
+        <span class="icon">&gt;</span>
+      </div>
     </div>
     <!--公告-->
-    <div class="bulletin-wrapper"></div>
+    <div class="bulletin-wrapper">
+      <span class="bulletin-title"></span><span class="bulletin-text">{{seller.bulletin}}</span>
+      <span class="icon">&gt;</span>
+    </div>
   </div>
 </template>
 
@@ -31,6 +38,9 @@
       seller: {
         type: Object
       }
+    },
+    created () {
+      this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
     }
   }
 </script>
@@ -38,10 +48,12 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "../../common/stylus/mixin.styl";
   .header{
+    position: relative;
     color: #fff;
-    background: #000;
+    background: #999
     /*商家信息*/
     .content-wrapper{
+      position: relative;
       padding:24px 12px 18px 24px;
       font-size 0;
       /*图片*/
@@ -81,6 +93,7 @@
         .support{
           .icon{
             display: inline-block;
+            vertical-align top;
             width: 12px;
             height: 12px;
             margin-right 4px;
@@ -102,7 +115,60 @@
               bg-image('special_1')
             }
           }
+          .text{
+            line-height: 12px;
+            font-size 10px;
+
+          }
         }
+      }
+      .support-count{
+        position: absolute;
+        right: 12px;
+        bottom: 14px;
+        padding: 8px;
+        height: 24px
+        line-height: 24px
+        border-radius: 14px
+        background: rgba(0,0,0,0.2)
+        text-align center;
+        .count {
+          font-size 10px
+        }
+        .icon {
+          font-size: 10px
+          margin-left: 3px
+        }
+      }
+    }
+    /*公告*/
+    .bulletin-wrapper{
+      position: relative;
+      height: 28px;
+      line-height:28px;
+      padding: 0 22px 0 12px;
+      white-space: nowrap
+      overflow: hidden;
+      -ms-text-overflow: ellipsis
+      text-overflow: ellipsis
+      background: rgba(7, 17, 27, 0.2)
+      .bulletin-title{
+        display: inline-block;
+        vertical-align middle
+        width:22px;
+        height: 12px;
+        bg-image('bulletin')
+        background-size: 22px 12px;
+        background-repeat: no-repeat;
+      }
+      .bulletin-text{
+        margin: 0 4px;
+        font-size 10px;
+      }
+      .icon{
+        position: absolute
+        right: 12px;
+        top: 2px;
       }
     }
   }
