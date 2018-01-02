@@ -28,6 +28,10 @@
       <span class="bulletin-title"></span><span class="bulletin-text">{{seller.bulletin}}</span>
       <span class="icon">&gt;</span>
     </div>
+    <!--背景-->
+    <div class="bigbackground">
+      <img :src="seller.avatar" alt="bg" width="100%" height="100%">
+    </div>
   </div>
 </template>
 
@@ -50,7 +54,7 @@
   .header{
     position: relative;
     color: #fff;
-    background: #999
+    background: rgba(7, 17, 27, 0.5)
     /*商家信息*/
     .content-wrapper{
       position: relative;
@@ -170,6 +174,16 @@
         right: 12px;
         top: 2px;
       }
+    }
+    /*背景*/
+    .bigbackground{
+      position: absolute
+      top:0
+      left: 0;
+      width: 100%;
+      height: 100%
+      z-index: -1;
+      filter: blur(10px)
     }
   }
 </style>
