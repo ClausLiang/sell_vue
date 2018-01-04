@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import './iconfont/iconfont.css' // 引入iconfont
 import axios from 'axios'
 Vue.prototype.$http = axios
 
