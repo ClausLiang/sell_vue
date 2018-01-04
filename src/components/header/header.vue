@@ -32,6 +32,8 @@
     <div class="bigbackground">
       <img :src="seller.avatar" alt="bg" width="100%" height="100%">
     </div>
+    <!--过渡-->
+    <transition name="myfade">
     <!--商家弹层详情-->
     <div class="detail" v-show="detailShow">
       <div class="detail-wrapper clearfix">
@@ -67,6 +69,7 @@
         <i class="icon iconfont icon-close" @click="detailShow = false"></i>
       </div>
     </div>
+    </transition>
   </div>
 </template>
 
@@ -241,6 +244,11 @@
       height: 100%
       overflow: auto
       background: rgba(7, 17, 27, 0.8)
+      transition: all 1s
+      &.myfade-enter, &.myfade-leave-active {
+        opacity: 0
+        background: rgba(7, 17, 27, 0)
+      }
       .detail-wrapper{
         width: 100%;
         min-height: 100%
