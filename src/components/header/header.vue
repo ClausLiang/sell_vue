@@ -18,13 +18,13 @@
           <span class="text">{{seller.supports[0].description}}</span>
         </div>
       </div>
-      <div v-if="seller.supports" class="support-count">
+      <div v-if="seller.supports" class="support-count" @click="detailShow = true">
         <span class="count">{{seller.supports.length}}个</span>
         <span class="icon">&gt;</span>
       </div>
     </div>
     <!--公告-->
-    <div class="bulletin-wrapper">
+    <div class="bulletin-wrapper" @click="detailShow = true">
       <span class="bulletin-title"></span><span class="bulletin-text">{{seller.bulletin}}</span>
       <span class="icon">&gt;</span>
     </div>
@@ -32,6 +32,8 @@
     <div class="bigbackground">
       <img :src="seller.avatar" alt="bg" width="100%" height="100%">
     </div>
+    <!--商家弹层详情-->
+    <div class="detail" v-show="detailShow"></div>
   </div>
 </template>
 
@@ -41,6 +43,11 @@
     props: {
       seller: {
         type: Object
+      }
+    },
+    data () {
+      return {
+        detailShow: false
       }
     },
     created () {
@@ -55,6 +62,7 @@
     position: relative;
     color: #fff;
     background: rgba(7, 17, 27, 0.5)
+    overflow: hidden
     /*商家信息*/
     .content-wrapper{
       position: relative;
@@ -184,6 +192,17 @@
       height: 100%
       z-index: -1;
       filter: blur(10px)
+    }
+    /*商家详情弹层*/
+    .detail{
+      position: fixed
+      z-index: 100
+      top: 0;
+      left: 0;
+      width: 100%
+      height: 100%
+      overflow: auto
+      background: rgba(7, 17, 27, 0.8)
     }
   }
 </style>
