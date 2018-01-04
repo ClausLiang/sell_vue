@@ -33,7 +33,14 @@
       <img :src="seller.avatar" alt="bg" width="100%" height="100%">
     </div>
     <!--商家弹层详情-->
-    <div class="detail" v-show="detailShow"></div>
+    <div class="detail" v-show="detailShow">
+      <div class="detail-wrapper clearfix">
+        <div class="detail-main"></div>
+      </div>
+      <div class="detail-close">
+        <i class="icon iconfont icon-close"></i>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -58,6 +65,7 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "../../common/stylus/mixin.styl";
+  @import "../../common/stylus/base.styl";
   .header{
     position: relative;
     color: #fff;
@@ -203,6 +211,22 @@
       height: 100%
       overflow: auto
       background: rgba(7, 17, 27, 0.8)
+      .detail-wrapper{
+        min-height: 100%
+        .detail-main{
+          margin-top 64px;
+          padding-bottom 64px;
+        }
+      }
+      .detail-close{
+        position: relative
+        width: 32px;
+        height: 32px
+        margin: -64px auto 0 auto
+        clear: both
+        font-size: 32px
+        color: #fff
+      }
     }
   }
 </style>
