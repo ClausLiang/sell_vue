@@ -40,10 +40,26 @@
           <div class="star-wrapper">
             <star :size="48" :score="seller.score"></star>
           </div>
+          <!--小标题自适应经典flex布局-->
           <div class="title">
             <div class="line"></div>
             <div class="text">优惠信息</div>
             <div class="line"></div>
+          </div>
+          <ul v-if="seller.supports" class="supports">
+            <li class="supports-item" v-for="item in seller.supports">
+              <span class="icon" :class="classMap[item.type]"></span>
+              <span class="text">{{item.description}}</span>
+            </li>
+          </ul>
+          <!--小标题自适应经典flex布局-->
+          <div class="title">
+            <div class="line"></div>
+            <div class="text">商家公告</div>
+            <div class="line"></div>
+          </div>
+          <div class="bulletin">
+            <p>{{seller.bulletin}}</p>
           </div>
         </div>
       </div>
@@ -242,10 +258,11 @@
             padding: 2px 0;
             text-align center
           }
+          /*小标题自适应经典flex布局*/
           .title{
             display: flex;
             width: 80%
-            margin: 30px auto 24px auto
+            margin: 28px auto 24px auto
             .line{
               flex: 1;
               position: relative;
@@ -254,7 +271,60 @@
             }
             .text{
               padding: 0 12px;
+              font-weight 700
               font-size 14px;
+            }
+          }
+          /*支持项目*/
+          .supports{
+            width: 80%
+            margin: 0 auto;
+            .supports-item{
+              padding: 0 12px;
+              margin-bottom: 12px;
+              font-size 0;
+              &:last-child{
+                margin-bottom: 0;
+              }
+              .icon{
+                display: inline-block;
+                width: 16px;
+                height: 16px;
+                margin-right 6px;
+                -webkit-background-size: 16px 16px;
+                background-size: 16px 16px;
+                background-repeat: no-repeat;
+                vertical-align top;
+                &.decrease {
+                  bg-image('decrease_2')
+                }
+                &.discount {
+                  bg-image('discount_2')
+                }
+                &.guarantee {
+                  bg-image('guarantee_2')
+                }
+                &.invoice {
+                  bg-image('invoice_2')
+                }
+                &.special {
+                  bg-image('special_2')
+                }
+              }
+              .text{
+                line-height:16px;
+                font-size 12px;
+              }
+            }
+          }
+          /*公告描述*/
+          .bulletin{
+            width: 80%;
+            margin: 0 auto
+            p{
+              padding: 0 12px
+              line-height: 24px;
+              font-size 12px;
             }
           }
         }
