@@ -17,6 +17,7 @@
         </div>
       </div>
     </div>
+    <div class="ball-container"></div>
   </div>
 </template>
 
@@ -58,8 +59,8 @@
       payDesc () {
         if (this.totalPrice === 0) {
           return `${this.minPrice}元起送`
-        } else if (this.totalPrice < this.minPirce) {
-          let diff = this.minPirce - this.totalPrice
+        } else if (this.totalPrice < this.minPrice) {
+          let diff = this.minPrice - this.totalPrice
           return `还差${diff}元起送`
         } else {
           return '去结算'
