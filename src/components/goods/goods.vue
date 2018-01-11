@@ -37,7 +37,8 @@
         </li>
       </ul>
     </div>
-    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+    <!--购物车的逻辑是这么实现的：1.子组件cartcontrol引起父组件中food的属性变化。2.父组件计算属性算出food哪些发生了变化。3.父组件将变化传递到shopcart子组件-->
+    <shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
 
@@ -54,7 +55,7 @@
     },
     data () {
       return {
-        goods: null,
+        goods: [],
         listHeight: [],
         scrollY: 0
       }
@@ -83,6 +84,18 @@
           }
         }
         return 0
+      },
+      selectFoods () {
+        let goods = []
+        // 该处两层循环，第一层循环拿出分类，第二层循环拿出分类下的food
+        this.goods.forEach(good => {
+          good.foods.forEach(food => {
+            if (food.count) {
+              goods.push(food)
+            }
+          })
+        })
+        return goods
       }
     },
     methods: {
