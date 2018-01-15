@@ -17,6 +17,9 @@
     props: {
       food: {
         type: Object
+      },
+      eventHub: { // 事件中心，派发事件用的
+        type: Object
       }
     },
     methods: {
@@ -26,6 +29,8 @@
         } else {
           this.food.count++
         }
+        console.log('点击的节点为：', event.target)
+        this.eventHub.$emit('cart-add', event.target) // 将点击的节点用派发事件的方式发送出去
       },
       decreaseCart () {
         if (this.food.count) {

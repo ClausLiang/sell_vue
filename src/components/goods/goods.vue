@@ -29,7 +29,7 @@
                   <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
                 <div class="cartcontrol-wrapper">
-                  <cartcontrol :food="food"></cartcontrol>
+                  <cartcontrol :food="food" :eventHub="eventHub"></cartcontrol>
                 </div>
               </div>
             </li>
@@ -38,7 +38,7 @@
       </ul>
     </div>
     <!--购物车的逻辑是这么实现的：1.子组件cartcontrol引起父组件中food的属性变化。2.父组件计算属性算出food哪些发生了变化。3.父组件将变化传递到shopcart子组件-->
-    <shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+    <shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" :eventHub="eventHub"></shopcart>
   </div>
 </template>
 
@@ -46,6 +46,7 @@
   import BScroll from 'better-scroll'
   import shopcart from './shopcart/shopcart'
   import cartcontrol from './cartcontrol/cartcontrol'
+  import Vue from 'vue'
   export default {
     name: 'goods',
     props: {
@@ -57,10 +58,12 @@
       return {
         goods: [],
         listHeight: [],
-        scrollY: 0
+        scrollY: 0,
+        eventHub: null
       }
     },
     created () {
+      this.eventHub = new Vue() // 创建事件中心
       this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
       this.$http.get('./data.json').then(response => {
         this.goods = response.data.goods
