@@ -1,6 +1,8 @@
 <template>
+  <div>
   <div class="shopcart">
-    <div class="content">
+    <!--购物车本体-->
+    <div class="content" @click="toggleList">
       <div class="content-left">
         <div class="logo-wrapper">
           <div class="logo" :class="{'highlight': totalCount > 0}">
@@ -11,12 +13,13 @@
         <div class="price" :class="{'highlight': totalCount > 0}">￥{{totalPrice}}</div>
         <div class="desc">另需配送费￥{{deliveryPrice}}元</div>
       </div>
-      <div class="content-right">
+      <div class="content-right" @click.stop.prevent="pay">
         <div class="pay" :class="payClass">
           {{payDesc}}
         </div>
       </div>
     </div>
+    <!--购物车的小球-->
     <div class="ball-container">
       <div v-for="ball in balls">
         <transition name="drop" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
@@ -26,10 +29,38 @@
         </transition>
       </div>
     </div>
+    <!--购物车列表详情-->
+    <transition name="cartFold">
+      <div class="shopcart-list" v-show="listShow">
+        <div class="list-header">
+          <h1 class="title">购物车</h1>
+          <span class="empty" @click="empty">清空</span>
+        </div>
+        <div class="list-content" ref="listContent">
+          <ul>
+            <li class="food border-1px" v-for="food in selectFoods">
+              <span class="name">{{food.name}}</span>
+              <div class="price">
+                <span>￥{{food.price * food.count}}</span>
+              </div>
+              <div class="cartcontrol-wrapper">
+                <cartcontrol :eventHub="eventHub" :food="food"></cartcontrol>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </transition>
+  </div>
+  <transition name="fade">
+    <div class="list-mask" @click="fold = true" v-show="listShow"></div>
+  </transition>
   </div>
 </template>
 
 <script>
+  import BScroll from 'better-scroll'
+  import cartcontrol from '../cartcontrol/cartcontrol'
   export default {
     name: 'shopcart',
     data () {
@@ -41,7 +72,8 @@
           {show: false},
           {show: false}
         ],
-        dropBalls: []
+        dropBalls: [],
+        fold: true // 折叠
       }
     },
     props: {
@@ -115,6 +147,27 @@
           ball.show = false
           el.style.display = 'none'
         }
+      },
+      // 点击购物车本体，展开或折叠购物车列表详情
+      toggleList () {
+        if (!this.totalCount) {
+          return
+        }
+        this.fold = !this.fold
+      },
+      // 清空购物车
+      empty () {
+        this.selectFoods.forEach(food => {
+          food.count = 0
+        })
+        console.log(this.selectFoods)
+      },
+      // 点击结算
+      pay () {
+        if (this.totalPrice < this.minPrice) {
+          return
+        }
+        alert(`支付${this.totalPrice}`)
       }
     },
     computed: {
@@ -148,12 +201,37 @@
         } else {
           return ''
         }
+      },
+      // 计算属性，计算购物车详情列表是否展示
+      listShow () {
+        // 初始，totalCount为0
+        if (!this.totalCount) {
+          this.fold = true
+          return false
+        }
+        let show = !this.fold
+        if (show) {
+          this.$nextTick(() => {
+            if (!this.scroll) {
+              this.scroll = new BScroll(this.$refs.listContent, {
+                click: true
+              })
+            } else {
+              this.scroll.refresh()
+            }
+          })
+        }
+        return show
       }
+    },
+    components: {
+      cartcontrol
     }
   }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
+  @import "../../../common/stylus/mixin.styl"
   .shopcart{
     position: fixed;
     left: 0;
@@ -272,6 +350,82 @@
           }
         }
       }
+    }
+    /*购物车详情列表*/
+    .shopcart-list{
+      position: absolute
+      bottom: 48px;
+      left:0;
+      z-index: -1
+      width: 100%;
+      transition: all 0.5s
+      &.cartFold-enter, &.cartFold-leave-active {
+        transform: translate3d(0, 100%, 0)
+      }
+      /*头*/
+      .list-header {
+        height: 40px;
+        line-height: 40px;
+        padding: 0 18px;
+        background: #f3f5f7
+        border-bottom: 1px solid rgba(7, 17, 27, 0.1)
+        .title {
+          float: left;
+          font-size: 14px;
+          color: rgb(7, 17, 27)
+        }
+        .empty {
+          float: right;
+          font-size: 12px;
+          color: rgb(0, 160, 220)
+        }
+      }
+      /*列表区*/
+      .list-content {
+        padding: 0 18px;
+        max-height: 217px;
+        overflow: hidden
+        background: #fff
+        .food {
+          position: relative
+          padding: 12px 0;
+          box-sizing: border-box;
+          border-1px(rgba(7, 17, 27, 0.1))
+          .name {
+            line-height: 24px;
+            font-size: 14px;
+            color: rgb(7, 17, 27)
+          }
+          .price {
+            position: absolute
+            right: 90px;
+            bottom: 12px;
+            line-height: 24px;
+            font-size: 14px;
+            font-weight: 700
+            color: rbg(240, 20, 20)
+          }
+          .cartcontrol-wrapper {
+            position: absolute
+            right: 0
+            bottom: 6px;
+          }
+        }
+      }
+    }
+  }
+  .list-mask {
+    position: fixed
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    z-index: 40
+    background: rgba(7, 17, 27, 0.6)
+    transition: all 0.5s
+    &.fade-enter, &.fade-leave-active {
+      opacity: 0
+      background: rgba(7, 17, 27, 0)
     }
   }
 </style>
