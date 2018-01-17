@@ -37,7 +37,13 @@
         <!--商品评价-->
         <div class="ratingClass">
           <h1 class="title">商品评价</h1>
-          <ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="food.ratings"></ratingselect>
+          <ratingselect :select-type="selectType"
+                        :only-content="onlyContent"
+                        :desc="desc"
+                        :ratings="food.ratings"
+                        @ratingtypeSelect="ratingtypeSelectHandle"
+                        @contentToggle="contentToggleHandle">
+          </ratingselect>
         </div>
       </div>
     </div>
@@ -98,6 +104,20 @@
         }
         this.eventHub.$emit('cart-add', event.target) // 将点击的节点用派发事件的方式发送出去
         Vue.set(this.food, 'count', 1)
+      },
+      // 接收子组件派发的事件，显示对应类型的评价
+      ratingtypeSelectHandle (type) {
+        this.selectType = type
+        this.$nextTick(() => {
+          this.scroll.refresh()
+        })
+      },
+      // 接收子组件派发的事件, 是否显示没有内容的评论
+      contentToggleHandle (onlyContent) {
+        this.onlyContent = onlyContent
+        this.$nextTick(() => {
+          this.scroll.refresh()
+        })
       }
     },
     components: {
