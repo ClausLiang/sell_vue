@@ -46,7 +46,7 @@
           </ratingselect>
           <div class="rating-wrapper">
             <ul v-show="food.ratings && food.ratings.length">
-              <li v-for="rating in food.ratings" class="rating-item border-1px">
+              <li v-for="rating in food.ratings" v-show="needShow(rating.rateType, rating.text)" class="rating-item border-1px">
                 <div class="user">
                   <span class="name">{{rating.username}}</span>
                   <img :src="rating.avatar" class="avatar" width="12" height="12" alt="">
@@ -133,6 +133,25 @@
         this.$nextTick(() => {
           this.scroll.refresh()
         })
+      },
+      /**
+       * 是否显示该评论
+       * @param type 评论类型
+       * @param text 评论内容
+       * @returns {boolean}
+       */
+      needShow (type, text) {
+        // 1.先判断肯定不展示的
+        if (this.onlyContent && !text) {
+          return false
+        } else {
+          // 显示所有的
+          if (this.selectType === ALL) {
+            return true
+          } else {
+            return type === this.selectType
+          }
+        }
       }
     },
     components: {
