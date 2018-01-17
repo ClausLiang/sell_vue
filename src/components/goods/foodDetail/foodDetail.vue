@@ -10,7 +10,7 @@
             <span class="icon-left">&lt;</span>
           </div>
         </div>
-        <!--商品信息-->
+        <!--商品概要-->
         <div class="content">
           <h1 class="title">{{food.name}}</h1>
           <div class="detail">
@@ -27,7 +27,18 @@
             <div @click="addFirst" class="buy" v-show="!food.count || food.count===0">加入购物车</div>
           </transition>
         </div>
+        <split v-show="food.info"></split>
+        <!--商品信息-->
+        <div class="info" v-show="food.info">
+          <h1 class="title">商品信息</h1>
+          <p class="text">{{food.info}}</p>
+        </div>
         <split></split>
+        <!--商品评价-->
+        <div class="ratingClass">
+          <h1 class="title">商品评价</h1>
+          <ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="food.ratings"></ratingselect>
+        </div>
       </div>
     </div>
   </transition>
@@ -38,6 +49,10 @@
   import Vue from 'vue'
   import cartcontrol from '../cartcontrol/cartcontrol'
   import split from '../split/split'
+  import ratingselect from '../ratingselect/ratingselect'
+  // const POSITIVE = 0
+  // const NEGATIVE = 1
+  const ALL = 2
   export default {
     name: 'food-detail',
     props: {
@@ -50,13 +65,22 @@
     },
     data () {
       return {
-        showFlag: false
+        showFlag: false,
+        selectType: ALL,
+        onlyContent: false,
+        desc: {
+          all: '全部',
+          positive: '推荐',
+          negative: '吐槽'
+        }
       }
     },
     methods: {
       // 展示该页面，被外部调用
       show () {
         this.showFlag = true
+        this.selectType = ALL
+        this.onlyContent = false
         this.$nextTick(() => {
           if (!this.scroll) {
             this.scroll = new BScroll(this.$refs.foodWrapper, {
@@ -78,7 +102,8 @@
     },
     components: {
       cartcontrol,
-      split
+      split,
+      ratingselect
     }
   }
 </script>
@@ -120,7 +145,7 @@
         }
       }
     }
-    /*商品信息*/
+    /*商品概要*/
     .content {
       position: relative;
       padding: 18px;
@@ -180,6 +205,31 @@
         &.fade-enter-active {
           opacity: 0
         }
+      }
+    }
+    /*商品信息*/
+    .info {
+      padding: 18px;
+      .title {
+        line-height: 14px;
+        margin-bottom: 6px;
+        font-size: 14px;
+        color: rgb(7, 17, 27)
+      }
+      .text {
+        line-height: 24px;
+        padding: 0 8px;
+        font-size: 12px;
+        color: rgb(77, 85, 93)
+      }
+    }
+    .ratingClass {
+      padding-top: 18px;
+      .title {
+        line-height: 14px;
+        margin-left: 18px;
+        font-size: 14px;
+        color: rgb(7, 17, 27)
       }
     }
   }
