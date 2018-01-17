@@ -15,7 +15,7 @@
         <li v-for="item in goods" class="food-list food-list-hook">
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li v-for="food in item.foods" class="food-item border-1px">
+            <li v-for="food in item.foods" class="food-item border-1px" @click="selectFoodHandle(food, $event)">
               <div class="icon">
                 <img width="57" height="57" :src="food.icon" alt="">
               </div>
@@ -39,6 +39,8 @@
     </div>
     <!--购物车的逻辑是这么实现的：1.子组件cartcontrol引起父组件中food的属性变化。2.父组件计算属性算出food哪些发生了变化。3.父组件将变化传递到shopcart子组件-->
     <shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" :eventHub="eventHub"></shopcart>
+    <!--商品详情页-->
+    <foodDetail :food="selectedFood" :eventHub="eventHub" ref="foodDetail"></foodDetail>
   </div>
 </template>
 
@@ -46,6 +48,7 @@
   import BScroll from 'better-scroll'
   import shopcart from './shopcart/shopcart'
   import cartcontrol from './cartcontrol/cartcontrol'
+  import foodDetail from './foodDetail/foodDetail'
   import Vue from 'vue'
   export default {
     name: 'goods',
@@ -59,7 +62,8 @@
         goods: [],
         listHeight: [],
         scrollY: 0,
-        eventHub: null
+        eventHub: null,
+        selectedFood: {}
       }
     },
     created () {
@@ -131,11 +135,19 @@
           height += item.clientHeight
           this.listHeight.push(height)
         }
+      },
+      selectFoodHandle (food, event) {
+        if (!event._constructed) {
+          return
+        }
+        this.selectedFood = food
+        this.$refs.foodDetail.show()
       }
     },
     components: {
       shopcart,
-      cartcontrol
+      cartcontrol,
+      foodDetail
     }
   }
 </script>
