@@ -60,6 +60,10 @@
         width: 137px;
         border-right: 1px solid rgba(7, 17, 27, 0.1)
         text-align center
+        @media (max-width: 320px) {
+          flex: 0 0 120px
+          width: 120px
+        }
         .score {
           margin-bottom 6px;
           line-height 28px;
@@ -81,6 +85,9 @@
       .overview-right{
         flex: 1
         padding 6px 0 6px 24px
+        @media (max-width: 320px) {
+          padding-left: 6px;
+        }
         .score-wrapper {
           margin-bottom: 8px;
           font-size: 0
@@ -95,6 +102,9 @@
             display: inline-block
             margin: 0 12px;
             vertical-align top
+            @media (max-width: 320px) {
+              margin: 0 8px;
+            }
           }
           .score {
             display: inline-block
@@ -115,6 +125,9 @@
             margin-left 12px;
             font-size 12px;
             color: rgb(147, 153, 159)
+            @media (max-width: 320px) {
+              margin-left 8px;
+            }
           }
         }
       }
