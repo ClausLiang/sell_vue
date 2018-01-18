@@ -11,17 +11,26 @@
 </template>
 
 <script>
+import {urlParse} from './common/js/util'
 import vheader from './components/header/header'
 export default {
   name: 'app',
   data () {
     return {
-      seller: {}
+      seller: {
+        id: (() => {
+          if (window.location.search) {
+            return urlParse().id
+          } else {
+            return 1
+          }
+        })()
+      }
     }
   },
   created () {
     this.$http.get('./data.json').then(response => {
-      this.seller = response.data.seller
+      this.seller = Object.assign({}, this.seller, response.data.seller)
     }, error => {
       console.log(error)
     }).catch(err => {
