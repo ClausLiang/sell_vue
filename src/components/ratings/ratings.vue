@@ -1,5 +1,5 @@
 <template>
-  <div class="ratings">
+  <div class="ratings" ref="ratingDom">
     <div class="ratings-content">
       <div class="overview">
         <div class="overview-left">
@@ -24,12 +24,51 @@
           </div>
         </div>
       </div>
+      <split></split>
+      <ratingselect :select-type="selectType"
+                    :only-content="onlyContent"
+                    :desc="desc"
+                    :ratings="ratings"
+                    @ratingtypeSelect="ratingtypeSelectHandle"
+                    @contentToggle="contentToggleHandle">
+      </ratingselect>
+      <div class="rating-wrapper">
+        <ul>
+          <li v-for="rating in ratings" v-show="needShow(rating.rateType, rating.text)" class="rating-item border-1px">
+            <div class="avatar">
+              <img width="28" height="28" :src="rating.avatar" alt="">
+            </div>
+            <div class="content">
+              <h1 class="name">{{rating.username}}</h1>
+              <div class="star-wrapper">
+                <star :size="24" :score="rating.score"></star>
+                <span class="delivery" v-show="rating.deliveryTime">{{rating.deliveryTime}}分钟送达</span>
+              </div>
+              <p class="text">{{rating.text}}</p>
+              <div class="recommend" v-show="rating.recommend && rating.recommend.length">
+                <span class="icon iconfont icon-zan icon-up"></span>
+                <span v-for="item in rating.recommend" class="item">{{item}}</span>
+              </div>
+              <div class="time">
+                {{rating.rateTime | formatDate}}
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+  import {formatDate} from '../../common/js/date'
+  import BScroll from 'better-scroll'
   import star from '../header/star/star'
+  import split from '../goods/split/split'
+  import ratingselect from '../goods/ratingselect/ratingselect'
+  // const POSITIVE = 0
+  // const NEGATIVE = 1
+  const ALL = 2
   export default {
     name: 'ratings',
     props: {
@@ -37,13 +76,83 @@
         type: Object
       }
     },
+    data () {
+      return {
+        ratings: [],
+        selectType: ALL,
+        onlyContent: false,
+        desc: {
+          all: '全部',
+          positive: '推荐',
+          negative: '吐槽'
+        }
+      }
+    },
+    created () {
+      this.$http.get('./data.json').then(response => {
+        this.ratings = response.data.ratings
+        this.$nextTick(() => {
+          this.scroll = new BScroll(this.$refs.ratingDom, {
+            click: true
+          })
+        })
+      }, error => {
+        console.log(error)
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    methods: {
+      // 接收子组件派发的事件，显示对应类型的评价
+      ratingtypeSelectHandle (type) {
+        this.selectType = type
+        this.$nextTick(() => {
+          this.scroll.refresh()
+        })
+      },
+      // 接收子组件派发的事件, 是否显示没有内容的评论
+      contentToggleHandle (onlyContent) {
+        this.onlyContent = onlyContent
+        this.$nextTick(() => {
+          this.scroll.refresh()
+        })
+      },
+      /**
+       * 是否显示该评论
+       * @param type 评论类型
+       * @param text 评论内容
+       * @returns {boolean}
+       */
+      needShow (type, text) {
+        // 1.先判断肯定不展示的
+        if (this.onlyContent && !text) {
+          return false
+        } else {
+          // 显示所有的
+          if (this.selectType === ALL) {
+            return true
+          } else {
+            return type === this.selectType
+          }
+        }
+      }
+    },
+    filters: {
+      formatDate (time) {
+        let date = new Date(time)
+        return formatDate(date, 'yyyy-MM-dd hh:mm')
+      }
+    },
     components: {
-      star
+      star,
+      split,
+      ratingselect
     }
   }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
+  @import "../../common/stylus/mixin.styl"
   .ratings{
     position: absolute
     top: 174px;
@@ -128,6 +237,81 @@
             @media (max-width: 320px) {
               margin-left 8px;
             }
+          }
+        }
+      }
+    }
+    .rating-wrapper {
+      padding: 0 18px;
+      .rating-item{
+        display: flex;
+        padding: 18px 0;
+        border-1px(rgba(7, 17, 27, 0.1))
+        .avatar {
+          flex: 0 0 28px;
+          width: 28px;
+          margin-right: 12px;
+          img {
+            border-radius 50%
+          }
+        }
+        .content{
+          position: relative
+          flex:1
+          .name {
+            margin-bottom 4px;
+            line-height: 12px;
+            font-size 10px;
+            color: rgb(7, 17, 27)
+          }
+          .star-wrapper {
+            margin-bottom: 6px
+            font-size 0
+            .star {
+              display: inline-block
+              vertical-align top
+              margin-right 6px;
+            }
+            .delivery {
+              display: inline-block
+              vertical-align top
+              line-height: 12px;
+              font-size 10px;
+              color: rgb(147, 153, 159)
+            }
+          }
+          .text {
+            margin-bottom: 8px;
+            line-height 18px;
+            color: rgb(7, 17, 27)
+            font-size 12px;
+          }
+          .recommend {
+            line-height: 16px;
+            font-size 0
+            .icon-up, .item {
+              display: inline-block
+              margin: 0 8px 4px 0
+              font-size 9px;
+            }
+            .icon-up {
+              color: rgb(0, 160, 220)
+            }
+            .item {
+              padding: 0 6px;
+              border: 1px solid rgba(7, 17, 27, 0.1)
+              border-radius: 1px
+              color: rgb(147, 153, 159)
+              background: #fff
+            }
+          }
+          .time {
+            position: absolute
+            top: 0
+            right: 0
+            line-height: 12px;
+            font-size 10px
+            color: rgb(147, 153, 159)
           }
         }
       }
