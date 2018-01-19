@@ -69,7 +69,7 @@
     created () {
       this.eventHub = new Vue() // 创建事件中心
       this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
-      this.$http.get('./data.json').then(response => {
+      this.$http.get('./static/data/data.json').then(response => {
         this.goods = response.data.goods
         this.$nextTick(() => {
           this._initScroll()

@@ -31,7 +31,7 @@ export default {
     }
   },
   created () {
-    this.$http.get('./data.json').then(response => {
+    this.$http.get('./static/data/data.json').then(response => {
       this.seller = Object.assign({}, this.seller, response.data.seller)
     }, error => {
       console.log(error)

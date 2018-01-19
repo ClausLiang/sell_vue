@@ -89,7 +89,7 @@
       }
     },
     created () {
-      this.$http.get('./data.json').then(response => {
+      this.$http.get('./static/data/data.json').then(response => {
         this.ratings = response.data.ratings
         this.$nextTick(() => {
           this.scroll = new BScroll(this.$refs.ratingDom, {
